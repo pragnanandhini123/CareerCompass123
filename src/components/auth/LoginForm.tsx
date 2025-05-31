@@ -34,13 +34,17 @@ export function LoginForm() {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/dashboard'); // Redirect to dashboard on successful login
     } catch (firebaseError: any) {
-      // Handle Firebase errors (e.g., user not found, wrong password)
+      let specificError = 'Failed to sign in. Please try again.';
       if (firebaseError.code === 'auth/user-not-found' || firebaseError.code === 'auth/wrong-password' || firebaseError.code === 'auth/invalid-credential') {
-        setError('Invalid email or password.');
-      } else {
-        setError('Failed to sign in. Please try again.');
-        console.error("Firebase signin error:", firebaseError);
+        specificError = 'Invalid email or password.';
+      } else if (firebaseError.code === 'auth/invalid-email') {
+        specificError = 'The email address is not valid.';
+      } else if (firebaseError.code === 'auth/user-disabled') {
+        specificError = 'This user account has been disabled.';
       }
+      // Log detailed error to the console for debugging
+      console.error("Firebase signin error:", firebaseError.code, firebaseError.message);
+      setError(specificError);
     } finally {
       setLoading(false);
     }

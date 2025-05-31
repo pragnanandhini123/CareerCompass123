@@ -12,6 +12,13 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Check if essential config values are present
+if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
+  console.error(
+    'Firebase config values are missing. Please check your .env file and ensure it includes all necessary NEXT_PUBLIC_FIREBASE_ keys from your Firebase project settings. Also, ensure your Firebase project has the Email/Password sign-in provider enabled.'
+  );
+}
+
 let app: FirebaseApp;
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);

@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Compass, Mail, KeyRound, User } from 'lucide-react';
+import { Compass, Mail, KeyRound, User as UserIcon } from 'lucide-react';
 import { auth } from '@/lib/firebase'; // Import Firebase auth
-import { createUserWithEmailAndPassword } from 'firebase/auth'; // Import Firebase auth method
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'; // Import Firebase auth methods
 
 export function SignupForm() {
   const router = useRouter();
@@ -36,23 +36,31 @@ export function SignupForm() {
       setLoading(false);
       return;
     }
+    if (password.length < 6) {
+      setError('Password should be at least 6 characters long.');
+      setLoading(false);
+      return;
+    }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       // User created successfully, Firebase automatically signs them in.
-      // You can also update the user's profile with the name here if needed.
-      // e.g., updateProfile(auth.currentUser, { displayName: name });
-      router.push('/dashboard'); // Redirect to dashboard or a "verify email" page
-    } catch (firebaseError: any) {
-      // Handle Firebase errors (e.g., email already in use, weak password)
-      if (firebaseError.code === 'auth/email-already-in-use') {
-        setError('This email address is already in use.');
-      } else if (firebaseError.code === 'auth/weak-password') {
-        setError('The password is too weak. Please choose a stronger password.');
-      } else {
-        setError('Failed to create account. Please try again.');
-        console.error("Firebase signup error:", firebaseError);
+      // Update the user's profile with the name.
+      if (userCredential.user) {
+        await updateProfile(userCredential.user, { displayName: name });
       }
+      router.push('/dashboard'); // Redirect to dashboard
+    } catch (firebaseError: any) {
+      let specificError = 'Failed to create account. Please try again.';
+      if (firebaseError.code === 'auth/email-already-in-use') {
+        specificError = 'This email address is already in use.';
+      } else if (firebaseError.code === 'auth/weak-password') {
+        specificError = 'The password is too weak. Please choose a stronger password.';
+      } else if (firebaseError.code === 'auth/invalid-email') {
+        specificError = 'The email address is not valid.';
+      }
+      console.error("Firebase signup error:", firebaseError.code, firebaseError.message);
+      setError(specificError);
     } finally {
       setLoading(false);
     }
@@ -72,7 +80,7 @@ export function SignupForm() {
           <div className="space-y-1">
             <Label htmlFor="name">Full Name</Label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+              <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="name"
                 type="text"
@@ -102,7 +110,7 @@ export function SignupForm() {
             </div>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Password (min. 6 characters)</Label>
             <div className="relative">
               <KeyRound className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
               <Input
