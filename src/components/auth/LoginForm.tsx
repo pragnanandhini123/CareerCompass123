@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link'; // Import Link
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -80,11 +82,14 @@ export function LoginForm() {
       </CardContent>
       <CardFooter className="flex flex-col items-center text-sm">
         <p className="text-muted-foreground">
-          Don't have an account? <a href="#" className="font-medium text-primary hover:underline">Sign up</a>
+          Don't have an account?{' '}
+          <Link href="/signup" className="font-medium text-primary hover:underline">
+            Sign up
+          </Link>
         </p>
-        <a href="#" className="mt-2 text-muted-foreground hover:text-primary hover:underline">
+        <Link href="#" className="mt-2 text-muted-foreground hover:text-primary hover:underline">
           Forgot password?
-        </a>
+        </Link>
       </CardFooter>
     </Card>
   );
