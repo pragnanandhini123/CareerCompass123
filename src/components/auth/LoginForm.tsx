@@ -3,33 +3,46 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link'; // Import Link
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Compass, Mail, KeyRound } from 'lucide-react';
+import { auth } from '@/lib/firebase'; // Import Firebase auth
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Import Firebase auth method
 
 export function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setError('');
-    // Basic validation
+    setLoading(true);
+
     if (!email || !password) {
       setError('Email and password are required.');
+      setLoading(false);
       return;
     }
-    // Mock login logic
-    if (email === 'user@example.com' && password === 'password') {
-      // In a real app, set auth state here (e.g., cookies, context)
-      router.push('/dashboard');
-    } else {
-      setError('Invalid email or password.');
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push('/dashboard'); // Redirect to dashboard on successful login
+    } catch (firebaseError: any) {
+      // Handle Firebase errors (e.g., user not found, wrong password)
+      if (firebaseError.code === 'auth/user-not-found' || firebaseError.code === 'auth/wrong-password' || firebaseError.code === 'auth/invalid-credential') {
+        setError('Invalid email or password.');
+      } else {
+        setError('Failed to sign in. Please try again.');
+        console.error("Firebase signin error:", firebaseError);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,6 +69,7 @@ export function LoginForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="pl-10"
+                disabled={loading}
               />
             </div>
           </div>
@@ -71,12 +85,13 @@ export function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="pl-10"
+                disabled={loading}
               />
             </div>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-            Sign In
+          <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
           </Button>
         </form>
       </CardContent>

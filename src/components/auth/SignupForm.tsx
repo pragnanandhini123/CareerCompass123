@@ -8,7 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Compass, Mail, KeyRound, User } from 'lucide-react'; // Added User icon
+import { Compass, Mail, KeyRound, User } from 'lucide-react';
+import { auth } from '@/lib/firebase'; // Import Firebase auth
+import { createUserWithEmailAndPassword } from 'firebase/auth'; // Import Firebase auth method
 
 export function SignupForm() {
   const router = useRouter();
@@ -17,24 +19,43 @@ export function SignupForm() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setError('');
+    setLoading(true);
 
     if (!name || !email || !password || !confirmPassword) {
       setError('All fields are required.');
+      setLoading(false);
       return;
     }
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
+      setLoading(false);
       return;
     }
-    // Mock signup logic
-    console.log('Signing up with:', { name, email, password });
-    // In a real app, you would call your backend API here to create a user
-    // For now, we'll just redirect to the login page after "successful" signup
-    router.push('/'); 
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      // User created successfully, Firebase automatically signs them in.
+      // You can also update the user's profile with the name here if needed.
+      // e.g., updateProfile(auth.currentUser, { displayName: name });
+      router.push('/dashboard'); // Redirect to dashboard or a "verify email" page
+    } catch (firebaseError: any) {
+      // Handle Firebase errors (e.g., email already in use, weak password)
+      if (firebaseError.code === 'auth/email-already-in-use') {
+        setError('This email address is already in use.');
+      } else if (firebaseError.code === 'auth/weak-password') {
+        setError('The password is too weak. Please choose a stronger password.');
+      } else {
+        setError('Failed to create account. Please try again.');
+        console.error("Firebase signup error:", firebaseError);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,6 +81,7 @@ export function SignupForm() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 className="pl-10"
+                disabled={loading}
               />
             </div>
           </div>
@@ -75,6 +97,7 @@ export function SignupForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="pl-10"
+                disabled={loading}
               />
             </div>
           </div>
@@ -90,6 +113,7 @@ export function SignupForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="pl-10"
+                disabled={loading}
               />
             </div>
           </div>
@@ -105,12 +129,13 @@ export function SignupForm() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="pl-10"
+                disabled={loading}
               />
             </div>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mt-2">
-            Sign Up
+          <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mt-2" disabled={loading}>
+            {loading ? 'Signing Up...' : 'Sign Up'}
           </Button>
         </form>
       </CardContent>

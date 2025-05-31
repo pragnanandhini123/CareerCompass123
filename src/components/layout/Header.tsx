@@ -1,9 +1,9 @@
+
 "use client";
 
 import Link from 'next/link';
 import { Compass, Bell, UserCircle, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,13 +14,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase'; // Import Firebase auth
+import { signOut } from 'firebase/auth'; // Import Firebase signOut method
+import { useToast } from '@/hooks/use-toast';
 
 export function Header() {
   const router = useRouter();
+  const { toast } = useToast();
 
-  const handleLogout = () => {
-    // Mock logout
-    router.push('/');
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+      router.push('/'); // Redirect to login page
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        title: "Logout Failed",
+        description: "Could not log you out. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
