@@ -37,32 +37,6 @@ export async function generateQuiz(input: QuizGenerationInput): Promise<QuizGene
   return generateQuizFlow(input);
 }
 
-// Note: The original `prompt` variable defined with `ai.definePrompt` was not being used
-// in the `generateQuizFlow` function. The flow directly used `ai.generate`.
-// If `ai.definePrompt` was intended, it would be structured like this:
-// const prompt = ai.definePrompt({
-//   name: 'quizGenerationPrompt',
-//   input: {schema: QuizGenerationInputSchema},
-//   output: {schema: QuizGenerationOutputSchema},
-//   prompt: `You are a helpful AI assistant that generates engaging quizzes.
-// Please generate a quiz based on the following parameters:
-
-// Topic: {{{topic}}}
-// Number of Questions: {{{numberOfQuestions}}}
-// Difficulty: {{{difficulty}}}
-
-// For each question, provide:
-// 1.  The question text.
-// 2.  Exactly 4 multiple-choice options.
-// 3.  The 0-based index of the correct answer from the options.
-// 4.  A brief, optional explanation for the correct answer.
-
-// Ensure the quiz title is engaging and relevant to the topic.
-// The questions should be clear, unambiguous, and appropriate for the specified difficulty level.
-// Return the output strictly as a JSON object matching the provided schema. Do not include any preamble or explanation outside the JSON structure.
-// `,
-// });
-
 const generateQuizFlow = ai.defineFlow(
   {
     name: 'generateQuizFlow',
@@ -70,40 +44,45 @@ const generateQuizFlow = ai.defineFlow(
     outputSchema: QuizGenerationOutputSchema,
   },
   async (input) => {
-    // Add a system instruction to improve JSON output reliability for Gemini
     const augmentedPrompt = `
-      You are an expert quiz creator.
+      You are an expert quiz creator and meticulous fact-checker. Your primary goal is to generate ACCURATE and engaging quizzes.
       Topic: ${input.topic}
       Number of Questions: ${input.numberOfQuestions}
       Difficulty: ${input.difficulty || 'medium'}
 
-      Generate a quiz title and ${input.numberOfQuestions} questions. Each question must have 4 options and a correct answer index.
+      Generate a quiz title and ${input.numberOfQuestions} questions based on the topic and difficulty.
+      For each question:
+      1. Ensure the question text is clear, unambiguous, and factually correct for the given topic and difficulty.
+      2. Provide exactly 4 distinct multiple-choice options.
+      3. Ensure one option is unambiguously and verifiably correct. The other options should be plausible distractors.
+      4. The 'correctAnswerIndex' MUST point to the genuinely correct answer (0-based).
+      5. If you provide an 'explanation', it must be accurate and clearly justify why the correct answer is indeed correct.
+
+      Double-check all factual claims and the correctness of the answers before finalizing.
       Return the output strictly as a JSON object matching the provided schema. Do not include any preamble or explanation outside the JSON structure.
     `;
 
     const {output} = await ai.generate({
         prompt: augmentedPrompt,
-        model: 'googleai/gemini-2.0-flash', // Using a specific model known for good instruction following
+        model: 'googleai/gemini-2.0-flash', 
         output: {
-            format: 'json', // Request JSON output
-            schema: QuizGenerationOutputSchema, // Ensure this schema matches the expected output structure
+            format: 'json', 
+            schema: QuizGenerationOutputSchema, 
         },
         config: {
-            temperature: 0.7, // A bit of creativity
+            temperature: 0.5, // Slightly lower temperature for more factual responses
         }
     });
     
     if (!output) {
       throw new Error('AI failed to generate quiz output.');
     }
-    // Basic validation, ideally Zod would handle this if the model perfectly adheres.
     if (!output.questions || output.questions.length === 0) {
-        // Attempt a retry or return a default/error state
         console.warn("AI returned no questions, attempting to generate a fallback or indicating error.");
-        // Fallback or error handling
-        return { quizTitle: `Quiz for ${input.topic}`, questions: [] }; // Example fallback
+        return { quizTitle: `Quiz for ${input.topic}`, questions: [] }; 
     }
 
     return output;
   }
 );
+
