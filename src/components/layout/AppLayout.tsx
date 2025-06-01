@@ -1,7 +1,8 @@
+
 import type { ReactNode } from 'react';
 import { SidebarNav } from './SidebarNav';
 import { Header as AppHeader } from './Header';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Menu, Compass } from 'lucide-react';
 import Link from 'next/link';
@@ -32,16 +33,18 @@ export function AppLayout({ children }: AppLayoutProps) {
               </SheetTrigger>
               <SheetContent side="left" className="flex flex-col p-0 w-64 bg-sidebar text-sidebar-foreground">
                 {/* Mobile Sidebar Header */}
-                <div className="flex h-16 items-center border-b px-6 shrink-0">
-                  <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-                    <Compass className="h-7 w-7 text-sidebar-primary" />
-                    <span className="font-headline text-xl text-sidebar-primary">Career Compass</span>
-                  </Link>
-                </div>
+                <SheetHeader className="flex h-16 items-center border-b px-6 shrink-0">
+                  <SheetTitle>
+                    <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
+                      <Compass className="h-7 w-7 text-sidebar-primary" />
+                      <span className="font-headline text-xl text-sidebar-primary">Career Compass</span>
+                    </Link>
+                  </SheetTitle>
+                </SheetHeader>
                 {/* Mobile Sidebar Navigation */}
                 <ScrollArea className="flex-1">
                   {/* SidebarNav component contains the navigation links */}
-                  <SidebarNav /> 
+                  <SidebarNav />
                 </ScrollArea>
               </SheetContent>
             </Sheet>
