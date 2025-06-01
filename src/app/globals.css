@@ -18,10 +18,10 @@
     --primary-foreground: 0 0% 100%; /* White */
 
     --secondary: 210 60% 85%; /* Lighter Blue */
-    --secondary-foreground: 240 70% 30%; /* Darker Vibrant Blue - for text on secondary backgrounds if needed */
+    --secondary-foreground: 0 0% 100%; /* White text on secondary backgrounds */
 
     --muted: 220 20% 90%; /* Slightly darker cool gray for muted backgrounds */
-    --muted-foreground: 220 20% 85%; /* Light gray for muted text, for better contrast */
+    --muted-foreground: 220 20% 95%; /* Very light gray/off-white for muted text */
 
     --accent: 300 70% 60%; /* Vibrant Magenta/Purple */
     --accent-foreground: 0 0% 100%; /* White */
@@ -101,8 +101,8 @@
   }
   body {
     @apply bg-background text-foreground font-body;
-    /* Lighter gradient background */
-    background: linear-gradient(135deg, #C0C3FF 0%, #B3FDFF 25%, #D4BFFF 50%, #FFB8FF 75%, #FFD1E0 100%);
+    /* Vibrant, slightly darker animated gradient background */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #89f7fe 50%, #f063a4 75%, #ffd700 100%);
     background-size: 400% 400%;
     animation: backgroundGradientAnimation 20s ease infinite;
     text-rendering: optimizeLegibility;
@@ -143,7 +143,7 @@
 .glass-input {
   background: hsla(var(--input), 0.7); /* Input is white with 0.7 alpha */
   border-color: hsl(var(--input-border)); /* input-border is 220 20% 85% */
-  @apply placeholder:text-muted-foreground/70; /* muted-foreground is now light gray */
+  @apply placeholder:text-muted-foreground/70; /* muted-foreground is now very light gray */
 }
 
 /* Style adjustments for ShadCN components to better fit glassmorphism */
