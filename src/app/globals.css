@@ -101,8 +101,8 @@
   }
   body {
     @apply bg-background text-foreground font-body;
-    /* Vibrant gradient background similar to Figma */
-    background: linear-gradient(135deg, #6B73FF 0%, #00F0FF 25%, #8E54E9 50%, #FA00FF 75%, #FF85B8 100%);
+    /* Lighter gradient background */
+    background: linear-gradient(135deg, #C0C3FF 0%, #B3FDFF 25%, #D4BFFF 50%, #FFB8FF 75%, #FFD1E0 100%);
     background-size: 400% 400%;
     animation: backgroundGradientAnimation 20s ease infinite;
     text-rendering: optimizeLegibility;
