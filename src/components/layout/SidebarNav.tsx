@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -12,12 +13,13 @@ import {
   BarChart3,
   GraduationCap,
   Compass,
+  Lightbulb, // Added for consistency if Quiz is a primary nav item
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/quiz', label: 'Interest Quizzes', icon: FileText },
+  { href: '/quiz', label: 'Interest Quizzes', icon: Lightbulb }, // Changed icon to Lightbulb
   { href: '/career-prediction', label: 'Career Prediction', icon: BrainCircuit },
   { href: '/personalized-guidance', label: 'Personalized Guidance', icon: UserCheck },
   { href: '/career-profiles', label: 'Career Profiles', icon: Briefcase },
@@ -44,7 +46,7 @@ export function SidebarNav() {
               href={item.href}
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sidebar-foreground transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-                pathname === item.href && 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+                (pathname === item.href || (item.href === '/quiz' && pathname.startsWith('/quiz'))) && 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
               )}
             >
               <item.icon className="h-5 w-5" />
