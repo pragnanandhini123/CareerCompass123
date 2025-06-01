@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,7 +22,7 @@
     --secondary-foreground: 0 0% 100%; /* White text on secondary backgrounds */
 
     --muted: 220 20% 90%; /* Slightly darker cool gray for muted backgrounds */
-    --muted-foreground: 220 20% 95%; /* Very light gray/off-white for muted text */
+    --muted-foreground: 260 25% 96%; /* Very light, soft lavender for muted text */
 
     --accent: 300 70% 60%; /* Vibrant Magenta/Purple */
     --accent-foreground: 0 0% 100%; /* White */
@@ -56,9 +57,9 @@
   /* Dark theme can be defined here if needed in the future */
   .dark {
     --background: 225 20% 12%;
-    --foreground: 220 20% 90%; /* Kept as is for dark theme, which is not active by default */
+    --foreground: 220 20% 90%; 
 
-    --card: 225 20% 15%; /* Dark base for card with alpha */
+    --card: 225 20% 15%; 
     --card-foreground: 220 20% 90%;
 
     --popover: 225 20% 15%;
@@ -71,7 +72,7 @@
     --secondary-foreground: 210 60% 80%;
 
     --muted: 225 15% 25%;
-    --muted-foreground: 220 20% 65%;
+    --muted-foreground: 260 25% 90%; /* Adjusted for dark mode too */
 
     --accent: 300 60% 65%;
     --accent-foreground: 0 0% 100%;
@@ -79,18 +80,18 @@
     --destructive: 0 60% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 30%; /* hsla(0, 0%, 100%, 0.1) for dark mode */
-    --input: 225 20% 20%; /* hsla(0, 0%, 0%, 0.1) */
+    --border: 220 20% 30%; 
+    --input: 225 20% 20%; 
     --input-border: 220 20% 35%;
     --ring: 240 60% 65%;
 
-    --sidebar-background: 225 15% 18%; /* Dark base for sidebar with alpha */
+    --sidebar-background: 225 15% 18%; 
     --sidebar-foreground: 220 20% 80%;
     --sidebar-primary: 240 60% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 300 60% 65%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 10% 25%; /* hsla(0, 0%, 100%, 0.05) */
+    --sidebar-border: 220 10% 25%; 
     --sidebar-ring: 240 60% 65%;
   }
 }
@@ -117,9 +118,9 @@
   100% { background-position: 0% 50%; }
 }
 
-/* Glassmorphism utility styles (can be applied via Tailwind, but good to have CSS vars) */
+/* Glassmorphism utility styles */
 .glass-card {
-  background: hsla(var(--card), 0.5); /* Semi-transparent card */
+  background: hsla(var(--card), 0.5); 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid hsla(0, 0%, 100%, 0.2);
@@ -130,7 +131,7 @@
   background: hsla(var(--sidebar-background), 0.6);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border-color: hsla(0, 0%, 100%, 0.15); /* Specific for sidebar if needed */
+  border-color: hsla(0, 0%, 100%, 0.15); 
 }
 
 .glass-header {
@@ -141,12 +142,12 @@
 }
 
 .glass-input {
-  background: hsla(var(--input), 0.7); /* Input is white with 0.7 alpha */
-  border-color: hsl(var(--input-border)); /* input-border is 220 20% 85% */
-  @apply placeholder:text-muted-foreground/70; /* muted-foreground is now very light gray */
+  background: hsla(var(--input), 0.7); 
+  border-color: hsl(var(--input-border)); 
+  @apply placeholder:text-muted-foreground; /* Removed /70 opacity */
 }
 
-/* Style adjustments for ShadCN components to better fit glassmorphism */
+/* Style adjustments for ShadCN components */
 @layer components {
   .btn-glass {
     @apply transition-all duration-300;
@@ -159,6 +160,5 @@
   }
   .card-glass-hover:hover {
     @apply transform scale-[1.02] shadow-2xl;
-    /* background: hsla(var(--card), 0.65); Slightly more opaque on hover */
   }
 }
