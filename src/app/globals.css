@@ -4,24 +4,24 @@
 
 @layer base {
   :root {
-    /* Glassmorphism Light Theme based on Figma */
-    --background: 220 20% 95%; /* Light cool gray for content backdrop */
-    --foreground: 225 30% 15%; /* Dark blue-gray for text */
+    /* Glassmorphism Light Theme - Text adjusted to white/light gray */
+    --background: 220 20% 95%; /* Light cool gray for content backdrop - can remain light as content cards are semi-transparent */
+    --foreground: 0 0% 100%; /* White text */
 
     --card: 220 50% 100%; /* Base for card - will be white with alpha */
-    --card-foreground: 225 30% 15%;
+    --card-foreground: 0 0% 100%; /* White text on cards */
 
     --popover: 220 50% 100%; /* Base for popover - will be white with alpha */
-    --popover-foreground: 225 30% 15%;
+    --popover-foreground: 0 0% 100%; /* White text on popovers */
 
     --primary: 240 70% 60%; /* Vibrant Blue */
     --primary-foreground: 0 0% 100%; /* White */
 
     --secondary: 210 60% 85%; /* Lighter Blue */
-    --secondary-foreground: 240 70% 30%; /* Darker Vibrant Blue */
+    --secondary-foreground: 240 70% 30%; /* Darker Vibrant Blue - for text on secondary backgrounds if needed */
 
-    --muted: 220 20% 90%; /* Slightly darker cool gray */
-    --muted-foreground: 220 20% 45%;
+    --muted: 220 20% 90%; /* Slightly darker cool gray for muted backgrounds */
+    --muted-foreground: 220 20% 85%; /* Light gray for muted text, for better contrast */
 
     --accent: 300 70% 60%; /* Vibrant Magenta/Purple */
     --accent-foreground: 0 0% 100%; /* White */
@@ -44,7 +44,7 @@
 
     /* Sidebar specific theme variables for glassmorphism */
     --sidebar-background: 220 30% 100%; /* Base for sidebar - will be white with alpha */
-    --sidebar-foreground: 225 30% 25%; /* Darker text for sidebar */
+    --sidebar-foreground: 0 0% 98%; /* Off-white text for sidebar */
     --sidebar-primary: 240 70% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 300 70% 60%;
@@ -56,7 +56,7 @@
   /* Dark theme can be defined here if needed in the future */
   .dark {
     --background: 225 20% 12%;
-    --foreground: 220 20% 90%;
+    --foreground: 220 20% 90%; /* Kept as is for dark theme, which is not active by default */
 
     --card: 225 20% 15%; /* Dark base for card with alpha */
     --card-foreground: 220 20% 90%;
@@ -117,9 +117,6 @@
   100% { background-position: 0% 50%; }
 }
 
-/* Remove the old animated-gradient-background class as body now has a global one */
-/* .animated-gradient-background can be removed or repurposed if specifically needed elsewhere */
-
 /* Glassmorphism utility styles (can be applied via Tailwind, but good to have CSS vars) */
 .glass-card {
   background: hsla(var(--card), 0.5); /* Semi-transparent card */
@@ -144,9 +141,9 @@
 }
 
 .glass-input {
-  background: hsla(var(--input), 0.7);
-  border-color: hsl(var(--input-border));
-  @apply placeholder:text-muted-foreground/70;
+  background: hsla(var(--input), 0.7); /* Input is white with 0.7 alpha */
+  border-color: hsl(var(--input-border)); /* input-border is 220 20% 85% */
+  @apply placeholder:text-muted-foreground/70; /* muted-foreground is now light gray */
 }
 
 /* Style adjustments for ShadCN components to better fit glassmorphism */
