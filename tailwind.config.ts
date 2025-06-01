@@ -10,19 +10,19 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        body: ['PT Sans', 'sans-serif'],
-        headline: ['Playfair Display', 'serif'],
+        body: ['Poppins', 'sans-serif'],
+        headline: ['Poppins', 'sans-serif'], // Using Poppins for headlines too for consistency
         code: ['monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
-          DEFAULT: 'hsl(var(--card))',
+          DEFAULT: 'hsla(var(--card), var(--tw-bg-opacity, 1))', // Enable opacity control
           foreground: 'hsl(var(--card-foreground))',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
+          DEFAULT: 'hsla(var(--popover), var(--tw-bg-opacity, 1))',
           foreground: 'hsl(var(--popover-foreground))',
         },
         primary: {
@@ -46,7 +46,8 @@ const config: Config = {
           foreground: 'hsl(var(--destructive-foreground))',
         },
         border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
+        input: 'hsla(var(--input), var(--tw-bg-opacity, 1))', // Enable opacity control
+        'input-border': 'hsl(var(--input-border))',
         ring: 'hsl(var(--ring))',
         chart: {
           '1': 'hsl(var(--chart-1))',
@@ -56,7 +57,7 @@ const config: Config = {
           '5': 'hsl(var(--chart-5))',
         },
         sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
+          DEFAULT: 'hsla(var(--sidebar-background), var(--tw-bg-opacity, 1))', // Enable opacity control
           foreground: 'hsl(var(--sidebar-foreground))',
           primary: 'hsl(var(--sidebar-primary))',
           'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
@@ -70,6 +71,12 @@ const config: Config = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+        xl: 'calc(var(--radius) + 4px)', // For more rounded elements like buttons
+        '2xl': 'calc(var(--radius) + 8px)',
+      },
+      boxShadow: {
+        'glass-light': '0 8px 32px 0 rgba(31, 38, 135, 0.2)', // A subtle shadow for glass
+        'glass-strong': '0 12px 40px 0 rgba(0, 0, 0, 0.25)',
       },
       keyframes: {
         'accordion-down': {
@@ -88,7 +95,7 @@ const config: Config = {
             height: '0',
           },
         },
-        backgroundGradientAnimation: {
+        backgroundGradientAnimation: { // Already defined in globals.css, ensure consistency or remove from here
           '0%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
           '100%': { backgroundPosition: '0% 50%' },
@@ -97,7 +104,7 @@ const config: Config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'background-gradient': 'backgroundGradientAnimation 15s ease infinite',
+        'background-gradient': 'backgroundGradientAnimation 20s ease infinite', // Matched duration with globals
       },
     },
   },
