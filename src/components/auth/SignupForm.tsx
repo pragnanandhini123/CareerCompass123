@@ -58,6 +58,10 @@ export function SignupForm() {
         specificError = 'The password is too weak. Please choose a stronger password.';
       } else if (firebaseError.code === 'auth/invalid-email') {
         specificError = 'The email address is not valid.';
+      } else if (firebaseError.code === 'auth/configuration-not-found') {
+        specificError = 'Firebase Email/Password sign-in is not enabled. Please enable it in your Firebase project console (Authentication > Sign-in method).';
+      } else if (firebaseError.code === 'auth/api-key-not-valid') {
+        specificError = 'Invalid Firebase API Key. Please check your .env file and Firebase project settings.';
       }
       console.error("Firebase signup error:", firebaseError.code, firebaseError.message);
       setError(specificError);

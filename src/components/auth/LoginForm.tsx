@@ -41,6 +41,10 @@ export function LoginForm() {
         specificError = 'The email address is not valid.';
       } else if (firebaseError.code === 'auth/user-disabled') {
         specificError = 'This user account has been disabled.';
+      } else if (firebaseError.code === 'auth/configuration-not-found') {
+        specificError = 'Firebase Email/Password sign-in is not enabled. Please enable it in your Firebase project console (Authentication > Sign-in method).';
+      } else if (firebaseError.code === 'auth/api-key-not-valid') {
+        specificError = 'Invalid Firebase API Key. Please check your .env file and Firebase project settings.';
       }
       // Log detailed error to the console for debugging
       console.error("Firebase signin error:", firebaseError.code, firebaseError.message);
