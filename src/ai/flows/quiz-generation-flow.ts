@@ -12,7 +12,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const QuizQuestionSchema = z.object({
+const QuizQuestionSchema = z.object({
   questionText: z.string().describe('The text of the quiz question.'),
   options: z.array(z.string()).describe('An array of possible answers (e.g., 4 options).'),
   correctAnswerIndex: z.number().describe('The 0-based index of the correct answer in the options array.'),
@@ -20,14 +20,14 @@ export const QuizQuestionSchema = z.object({
 });
 export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
 
-export const QuizGenerationInputSchema = z.object({
+const QuizGenerationInputSchema = z.object({
   topic: z.string().describe('The topic for the quiz (e.g., "General Knowledge", "Mathematics", "World History").'),
   numberOfQuestions: z.number().min(1).max(20).default(5).describe('The number of questions to generate for the quiz.'),
   difficulty: z.enum(['easy', 'medium', 'hard']).default('medium').optional().describe('The desired difficulty level of the quiz.'),
 });
 export type QuizGenerationInput = z.infer<typeof QuizGenerationInputSchema>;
 
-export const QuizGenerationOutputSchema = z.object({
+const QuizGenerationOutputSchema = z.object({
   quizTitle: z.string().describe('A suitable title for the generated quiz (e.g., "Fun General Knowledge Challenge").'),
   questions: z.array(QuizQuestionSchema).describe('An array of generated quiz questions.'),
 });
@@ -37,27 +37,31 @@ export async function generateQuiz(input: QuizGenerationInput): Promise<QuizGene
   return generateQuizFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'quizGenerationPrompt',
-  input: {schema: QuizGenerationInputSchema},
-  output: {schema: QuizGenerationOutputSchema},
-  prompt: `You are a helpful AI assistant that generates engaging quizzes.
-Please generate a quiz based on the following parameters:
+// Note: The original `prompt` variable defined with `ai.definePrompt` was not being used
+// in the `generateQuizFlow` function. The flow directly used `ai.generate`.
+// If `ai.definePrompt` was intended, it would be structured like this:
+// const prompt = ai.definePrompt({
+//   name: 'quizGenerationPrompt',
+//   input: {schema: QuizGenerationInputSchema},
+//   output: {schema: QuizGenerationOutputSchema},
+//   prompt: `You are a helpful AI assistant that generates engaging quizzes.
+// Please generate a quiz based on the following parameters:
 
-Topic: {{{topic}}}
-Number of Questions: {{{numberOfQuestions}}}
-Difficulty: {{{difficulty}}}
+// Topic: {{{topic}}}
+// Number of Questions: {{{numberOfQuestions}}}
+// Difficulty: {{{difficulty}}}
 
-For each question, provide:
-1.  The question text.
-2.  Exactly 4 multiple-choice options.
-3.  The 0-based index of the correct answer from the options.
-4.  A brief, optional explanation for the correct answer.
+// For each question, provide:
+// 1.  The question text.
+// 2.  Exactly 4 multiple-choice options.
+// 3.  The 0-based index of the correct answer from the options.
+// 4.  A brief, optional explanation for the correct answer.
 
-Ensure the quiz title is engaging and relevant to the topic.
-The questions should be clear, unambiguous, and appropriate for the specified difficulty level.
-`,
-});
+// Ensure the quiz title is engaging and relevant to the topic.
+// The questions should be clear, unambiguous, and appropriate for the specified difficulty level.
+// Return the output strictly as a JSON object matching the provided schema. Do not include any preamble or explanation outside the JSON structure.
+// `,
+// });
 
 const generateQuizFlow = ai.defineFlow(
   {
@@ -82,7 +86,7 @@ const generateQuizFlow = ai.defineFlow(
         model: 'googleai/gemini-2.0-flash', // Using a specific model known for good instruction following
         output: {
             format: 'json', // Request JSON output
-            schema: QuizGenerationOutputSchema,
+            schema: QuizGenerationOutputSchema, // Ensure this schema matches the expected output structure
         },
         config: {
             temperature: 0.7, // A bit of creativity
